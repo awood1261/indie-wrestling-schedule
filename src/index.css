@@ -450,6 +450,14 @@ button {
   color: var(--accent);
   font-size: clamp(1rem, 3.6vw, 1.3rem);
   font-weight: 900;
+  text-decoration: none;
+}
+
+.event-promotion:hover,
+.event-promotion:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 .event-card__details {

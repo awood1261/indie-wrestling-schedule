@@ -6,6 +6,7 @@ type EventCardProps = {
   accent: 'green' | 'purple' | 'blue';
   promotion: string;
   websiteLabel: string;
+  websiteUrl: string;
   date: string;
   time: string;
   venue: string;
@@ -18,6 +19,7 @@ export function EventCard({
   accent,
   promotion,
   websiteLabel,
+  websiteUrl,
   date,
   time,
   venue,
@@ -36,7 +38,14 @@ export function EventCard({
         </div>
 
         <h2 className="event-name">{promotion}</h2>
-        <p className={`event-promotion event-promotion--${accent}`}>{websiteLabel}</p>
+        <a
+          className={`event-promotion event-promotion--${accent}`}
+          href={websiteUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {websiteLabel}
+        </a>
 
         <div className="event-card__details">
           <EventMeta icon="▣">{date}</EventMeta>

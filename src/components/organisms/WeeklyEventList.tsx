@@ -10,6 +10,7 @@ export function WeeklyEventList() {
           accent={event.accent}
           promotion={event.promotion}
           websiteLabel={event.websiteLabel}
+          websiteUrl={event.websiteUrl}
           date={event.displayDate}
           time={event.displayTime}
           venue={event.venueName}
