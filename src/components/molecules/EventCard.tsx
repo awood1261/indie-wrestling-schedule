@@ -7,12 +7,12 @@ type EventCardProps = {
   promotion: string;
   websiteLabel: string;
   websiteUrl: string | null;
+  day: string;
+  state: string;
   date: string;
   time: string;
   venue: string;
   cityState: string;
-  featureLabel?: string;
-  matchCount: number;
 };
 
 export function EventCard({
@@ -20,21 +20,27 @@ export function EventCard({
   promotion,
   websiteLabel,
   websiteUrl,
+  day,
+  state,
   date,
   time,
   venue,
-  cityState,
-  featureLabel = 'Live Event',
-  matchCount
+  cityState
 }: EventCardProps) {
+  const isWeekend = ['Friday', 'Saturday', 'Sunday'].includes(day);
+  const shouldShowTimeTbd = time === 'Time TBD';
+
   return (
     <article className={`event-card event-card--${accent}`} aria-label={promotion}>
       <PosterTile title={promotion} promotion={promotion} accent={accent} />
 
       <div className="event-card__body">
         <div className="event-card__topline">
-          <Badge label={featureLabel} tone={accent} />
-          <Badge label="Live Event" variant="outline" tone={accent} />
+          <div className="event-card__badges" aria-label="Event tags">
+            {shouldShowTimeTbd ? <Badge label="Time TBD" tone={accent} /> : null}
+            {isWeekend ? <Badge label="Weekend" tone={accent} /> : null}
+            {state ? <Badge label={state} variant="outline" tone={accent} /> : null}
+          </div>
         </div>
 
         <h2 className="event-name">{promotion}</h2>
@@ -61,7 +67,6 @@ export function EventCard({
         </div>
 
         <div className="event-card__action-row">
-          <span className="match-note">🏆 {matchCount} schedule notes</span>
           <button type="button" className="detail-button">
             View Details
             <span aria-hidden="true">›</span>

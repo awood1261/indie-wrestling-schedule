@@ -4,35 +4,25 @@ import { Header } from './components/organisms/Header';
 import { Hero } from './components/organisms/Hero';
 import { WeekSelector } from './components/organisms/WeekSelector';
 import { WeeklyEventList } from './components/organisms/WeeklyEventList';
-import { eventStats, scheduleWeeks } from './data/schedule';
+import { filterEventsBySearch, scheduleWeeks } from './data/schedule';
 
 export default function App() {
   const [selectedWeekId, setSelectedWeekId] = useState(scheduleWeeks[0]?.id ?? '');
+  const [searchQuery, setSearchQuery] = useState('');
   const selectedWeek = useMemo(
     () => scheduleWeeks.find((week) => week.id === selectedWeekId) ?? scheduleWeeks[0],
     [selectedWeekId]
+  );
+  const filteredEvents = useMemo(
+    () => filterEventsBySearch(selectedWeek?.events ?? [], searchQuery),
+    [searchQuery, selectedWeek]
   );
 
   return (
     <div className="app-shell">
       <Header />
       <main>
-        <Hero />
-
-        <section className="stats-grid" aria-label="Schedule highlights">
-          <article>
-            <strong>{eventStats.listedEvents}</strong>
-            <span>events tracked</span>
-          </article>
-          <article>
-            <strong>{eventStats.promotions}</strong>
-            <span>promotions</span>
-          </article>
-          <article>
-            <strong>{eventStats.states}</strong>
-            <span>regions</span>
-          </article>
-        </section>
+        <Hero searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 
         <section className="section-heading">
           <div>
@@ -51,8 +41,9 @@ export default function App() {
         />
 
         <WeeklyEventList
-          events={selectedWeek?.events ?? []}
+          events={filteredEvents}
           weekLabel={selectedWeek?.rangeLabel ?? 'the selected week'}
+          searchQuery={searchQuery}
         />
       </main>
       <BottomNav />

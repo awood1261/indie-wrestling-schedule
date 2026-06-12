@@ -15,6 +15,9 @@ export type FeaturedEvent = ScheduleEvent & {
   displayTime: string;
   sortDate: Date;
   venueName: string;
+  city: string;
+  state: string;
+  zipCode: string;
   cityState: string;
   websiteLabel: string;
   websiteUrl: string | null;
@@ -78,12 +81,18 @@ function toWebsiteUrl(website: string | null) {
 function splitLocation(location: string) {
   const parts = location.split(',').map((part) => part.trim()).filter(Boolean);
   const city = parts.length >= 2 ? parts[parts.length - 2] : parts[parts.length - 1];
-  const state = parts[parts.length - 1];
+  const stateZip = parts[parts.length - 1] ?? '';
+  const stateZipMatch = stateZip.match(/^([A-Za-z]{2})(?:\s+(\d{5}(?:-\d{4})?))?$/);
+  const state = stateZipMatch?.[1] ?? stateZip;
+  const zipCode = stateZipMatch?.[2] ?? '';
   const venueName = parts.length > 2 ? parts.slice(0, -2).join(', ') : parts[0];
 
   return {
     venueName: venueName || location,
-    cityState: city && state ? `${city}, ${state}` : location
+    city: city ?? '',
+    state,
+    zipCode,
+    cityState: city && state ? `${city}, ${state}${zipCode ? ` ${zipCode}` : ''}` : location
   };
 }
 
@@ -152,15 +161,26 @@ export const scheduleWeeks: ScheduleWeek[] = Array.from(
 
 export const upcomingEvents: FeaturedEvent[] = scheduleWeeks[0]?.events ?? [];
 
-export const eventStats = {
-  listedEvents: allEvents.length,
-  promotions: new Set(allEvents.map((event) => event.promotion)).size,
-  states: new Set(
-    allEvents
-      .map((event) => {
-        const parts = event.location.split(',');
-        return parts[parts.length - 1]?.trim();
-      })
-      .filter(Boolean)
-  ).size
-};
+export function filterEventsBySearch(events: FeaturedEvent[], query: string) {
+  const normalizedQuery = query.trim().toLowerCase();
+
+  if (!normalizedQuery) {
+    return events;
+  }
+
+  return events.filter((event) => {
+    const searchableFields = [
+      event.promotion,
+      event.venueName,
+      event.city,
+      event.state,
+      event.zipCode,
+      event.cityState,
+      event.location,
+      event.website ?? '',
+      event.websiteLabel
+    ];
+
+    return searchableFields.some((field) => field.toLowerCase().includes(normalizedQuery));
+  });
+}
