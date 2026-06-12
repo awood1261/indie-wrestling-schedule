@@ -525,6 +525,11 @@ button {
   text-align: center;
 }
 
+.event-meta__content {
+  display: block;
+  min-width: 0;
+}
+
 .event-meta__subtext {
   display: block;
   margin-top: 2px;
