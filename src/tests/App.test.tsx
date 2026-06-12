@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import App from '../App';
 
 import { EventCard } from '../components/molecules/EventCard';
@@ -10,7 +10,13 @@ describe('App shell', () => {
     expect(screen.getByRole('img', { name: /grapsfinder/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /find wrestling events near you/i })).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/search events/i)).toBeInTheDocument();
-    expect(screen.getByRole('article', { name: 'Rocky Mountain Pro' })).toBeInTheDocument();
+    const firstEvent = screen.getByRole('article', { name: 'Rocky Mountain Pro' });
+
+    expect(firstEvent).toBeInTheDocument();
+    expect(within(firstEvent).getByRole('link', { name: 'FACEBOOK.COM' })).toHaveAttribute(
+      'href',
+      'https://facebook.com/TheRockyMtnPro'
+    );
   });
 
   it('shows a fallback time label when the schedule time is unavailable', () => {
@@ -19,6 +25,7 @@ describe('App shell', () => {
         accent="green"
         promotion="Test Promotion"
         websiteLabel="TESTPROMOTION.COM"
+        websiteUrl="https://testpromotion.com"
         date="Thu, Jun 11, 2026"
         time="Time TBD"
         venue="Test Venue"

@@ -16,6 +16,7 @@ export type FeaturedEvent = ScheduleEvent & {
   venueName: string;
   cityState: string;
   websiteLabel: string;
+  websiteUrl: string;
   accent: 'green' | 'purple' | 'blue';
 };
 
@@ -43,6 +44,10 @@ function toWebsiteLabel(website: string) {
     .toUpperCase();
 }
 
+function toWebsiteUrl(website: string) {
+  return /^https?:\/\//i.test(website) ? website : `https://${website}`;
+}
+
 function splitLocation(location: string) {
   const parts = location.split(',').map((part) => part.trim()).filter(Boolean);
   const city = parts.length >= 2 ? parts[parts.length - 2] : parts[parts.length - 1];
@@ -67,6 +72,7 @@ export const upcomingEvents: FeaturedEvent[] = scheduleData.slice(0, 8).map((eve
     displayDate: toDisplayDate(event.date),
     displayTime: event.time && event.time.trim().length > 0 ? event.time : 'Time TBD',
     websiteLabel: toWebsiteLabel(event.website),
+    websiteUrl: toWebsiteUrl(event.website),
     accent: accentCycle[index % accentCycle.length]
   };
 });
