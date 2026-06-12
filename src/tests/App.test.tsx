@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import App from '../App';
 
 import { EventCard } from '../components/molecules/EventCard';
@@ -17,6 +17,17 @@ describe('App shell', () => {
       'href',
       'https://facebook.com/TheRockyMtnPro'
     );
+  });
+
+  it('renders events for the selected week', () => {
+    render(<App />);
+
+    expect(screen.getByRole('heading', { name: 'Jun 7 - Jun 13' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Week of Jun 14/i }));
+
+    expect(screen.getByRole('heading', { name: 'Jun 14 - Jun 20' })).toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'Pro Championship Wrestling (PCW)' })).toBeInTheDocument();
   });
 
   it('shows a fallback time label when the schedule time is unavailable', () => {
