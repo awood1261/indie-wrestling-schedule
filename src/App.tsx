@@ -1,53 +1,44 @@
+import { BottomNav } from './components/organisms/BottomNav';
 import { Header } from './components/organisms/Header';
+import { Hero } from './components/organisms/Hero';
 import { WeeklyEventList } from './components/organisms/WeeklyEventList';
+import { eventStats } from './data/schedule';
 
 export default function App() {
   return (
-    <main className="app-shell">
+    <div className="app-shell">
       <Header />
+      <main>
+        <Hero />
 
-      <section className="page-section hero-panel card">
-        <div className="hero-copy">
-          <p className="eyebrow">Featured this week</p>
-          <h2 className="page-title">Find independent wrestling events</h2>
-          <p className="page-copy">
-            Discover the next show, scan tonight&apos;s lineup, and keep your weekend wrestling plan in one place.
-          </p>
-        </div>
-
-        <div className="hero-badges" aria-label="Quick filters">
-          <span className="chip chip--active">This week</span>
-          <span className="chip">Live tonight</span>
-          <span className="chip">Near you</span>
-        </div>
-
-        <div className="hero-stats" aria-label="Highlights">
-          <article className="stat-card">
-            <strong>12+</strong>
-            <span>promotions listed</span>
+        <section className="stats-grid" aria-label="Schedule highlights">
+          <article>
+            <strong>{eventStats.listedEvents}</strong>
+            <span>events tracked</span>
           </article>
-          <article className="stat-card">
-            <strong>Quick scan</strong>
-            <span>mobile-first event cards</span>
+          <article>
+            <strong>{eventStats.promotions}</strong>
+            <span>promotions</span>
           </article>
-          <article className="stat-card">
-            <strong>Fresh feed</strong>
-            <span>built from the current schedule</span>
+          <article>
+            <strong>{eventStats.states}</strong>
+            <span>regions</span>
           </article>
-        </div>
-      </section>
+        </section>
 
-      <section className="page-section">
-        <div className="section-heading">
+        <section className="section-heading">
           <div>
-            <p className="eyebrow">Upcoming week</p>
-            <h3 className="section-title">Tonight&apos;s independent wrestling lineup</h3>
+            <p className="eyebrow">Upcoming events</p>
+            <h2>Fresh from the wrestling schedule</h2>
           </div>
-          <button type="button" className="ghost-button">View all →</button>
-        </div>
-      </section>
+          <button type="button" className="calendar-link">
+            View Calendar <span aria-hidden="true">-&gt;</span>
+          </button>
+        </section>
 
-      <WeeklyEventList />
-    </main>
+        <WeeklyEventList />
+      </main>
+      <BottomNav />
+    </div>
   );
 }

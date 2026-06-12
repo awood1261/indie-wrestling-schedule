@@ -1,23 +1,59 @@
 import { Badge } from '../atoms/Badge';
+import { EventMeta } from './EventMeta';
+import { PosterTile } from './PosterTile';
 
 type EventCardProps = {
+  accent: 'green' | 'purple' | 'blue';
   promotion: string;
+  websiteLabel: string;
   date: string;
-  time: string | null;
+  time: string;
   venue: string;
+  cityState: string;
+  featureLabel?: string;
+  matchCount: number;
 };
 
-export function EventCard({ promotion, date, time, venue }: EventCardProps) {
-  const displayTime = time && time.trim().length > 0 ? time : 'Time TBD';
-
+export function EventCard({
+  accent,
+  promotion,
+  websiteLabel,
+  date,
+  time,
+  venue,
+  cityState,
+  featureLabel = 'Live Event',
+  matchCount
+}: EventCardProps) {
   return (
-    <article className="card event-card" aria-label={promotion}>
-      <h3 className="event-name">{promotion}</h3>
-      <p className="event-meta">{date} • {displayTime}</p>
-      <p className="event-meta">{venue}</p>
-      <div className="event-tag-row">
-        <Badge label="Weekly schedule" />
-        <Badge label="Mobile first" />
+    <article className={`event-card event-card--${accent}`} aria-label={promotion}>
+      <PosterTile title={promotion} promotion={promotion} accent={accent} />
+
+      <div className="event-card__body">
+        <div className="event-card__topline">
+          <Badge label={featureLabel} tone={accent} />
+          <Badge label="Live Event" variant="outline" tone={accent} />
+        </div>
+
+        <h2 className="event-name">{promotion}</h2>
+        <p className={`event-promotion event-promotion--${accent}`}>{websiteLabel}</p>
+
+        <div className="event-card__details">
+          <EventMeta icon="▣">{date}</EventMeta>
+          <EventMeta icon="◷">{time}</EventMeta>
+          <EventMeta icon="●">
+            <span>{venue}</span>
+            <span className="event-meta__subtext">{cityState}</span>
+          </EventMeta>
+        </div>
+
+        <div className="event-card__action-row">
+          <span className="match-note">🏆 {matchCount} schedule notes</span>
+          <button type="button" className="detail-button">
+            View Details
+            <span aria-hidden="true">›</span>
+          </button>
+        </div>
       </div>
     </article>
   );

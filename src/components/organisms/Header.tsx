@@ -1,14 +1,13 @@
+import { IconButton } from '../atoms/IconButton';
+
 export function Header() {
   return (
-    <header className="card header-card">
+    <header className="site-header">
+      <IconButton icon="☰" label="Open menu" />
       <div className="brand-row">
-        <img src="/gf-logo.png" alt="GrapsFinder logo" className="brand-logo" />
-        <div>
-          <p className="eyebrow">Indie Wrestling Schedule</p>
-          <h1 className="header-title">Find your next show</h1>
-        </div>
+        <img src="/gf-horz-logo.png" alt="GrapsFinder" className="brand-logo" />
       </div>
-      <p className="header-subtitle">A mobile-first schedule app built from the current wrestling data feed.</p>
+      <IconButton icon="♢" label="View notifications" />
     </header>
   );
 }

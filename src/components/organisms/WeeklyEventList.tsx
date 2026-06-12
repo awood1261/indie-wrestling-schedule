@@ -3,14 +3,19 @@ import { upcomingEvents } from '../../data/schedule';
 
 export function WeeklyEventList() {
   return (
-    <section className="event-list" aria-label="Weekly events">
-      {upcomingEvents.map((event) => (
+    <section className="event-list" aria-label="Upcoming events">
+      {upcomingEvents.map((event, index) => (
         <EventCard
-          key={`${event.promotion}-${event.day}-${event.date}-${event.location}`}
+          key={event.id}
+          accent={event.accent}
           promotion={event.promotion}
-          date={`${event.day}, ${event.date}`}
-          time={event.time}
-          venue={event.location}
+          websiteLabel={event.websiteLabel}
+          date={event.displayDate}
+          time={event.displayTime}
+          venue={event.venueName}
+          cityState={event.cityState}
+          featureLabel={index === 0 ? 'Featured' : 'Live Event'}
+          matchCount={(index % 3) + 1}
         />
       ))}
     </section>

@@ -7,18 +7,23 @@ describe('App shell', () => {
   it('renders the header and weekly event section', () => {
     render(<App />);
 
-    expect(screen.getByText('Find your next show')).toBeInTheDocument();
-    expect(screen.getByText('Find independent wrestling events')).toBeInTheDocument();
-    expect(screen.getByText('Rocky Mountain Pro')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /grapsfinder/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /find wrestling events near you/i })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/search events/i)).toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'Rocky Mountain Pro' })).toBeInTheDocument();
   });
 
   it('shows a fallback time label when the schedule time is unavailable', () => {
     render(
       <EventCard
+        accent="green"
         promotion="Test Promotion"
-        date="Thu, 6/11"
-        time={null}
+        websiteLabel="TESTPROMOTION.COM"
+        date="Thu, Jun 11, 2026"
+        time="Time TBD"
         venue="Test Venue"
+        cityState="Test City, PA"
+        matchCount={1}
       />
     );
 
