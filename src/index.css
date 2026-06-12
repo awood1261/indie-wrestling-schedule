@@ -128,12 +128,10 @@ button {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.72) 100%),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.96) 0%, rgba(0, 0, 0, 0.84) 44%, rgba(0, 0, 0, 0.48) 100%),
-    url("/gf-hero-bg.png");
-  background-position: center;
-  background-size: cover;
+  top: -80px;
+  background: url("/gf-hero-bg-square.jpg");
+  background-position: top right;
+  background-repeat: no-repeat;
   opacity: 0.96;
 }
 
