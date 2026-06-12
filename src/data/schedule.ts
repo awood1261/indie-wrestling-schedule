@@ -6,29 +6,41 @@ export type ScheduleEvent = {
   promotion: string;
   location: string;
   time: string | null;
-  website: string;
+  website: string | null;
 };
 
 export type FeaturedEvent = ScheduleEvent & {
   id: string;
   displayDate: string;
   displayTime: string;
+  sortDate: Date;
   venueName: string;
   cityState: string;
   websiteLabel: string;
-  websiteUrl: string;
+  websiteUrl: string | null;
   accent: 'green' | 'purple' | 'blue';
+};
+
+export type ScheduleWeek = {
+  id: string;
+  label: string;
+  rangeLabel: string;
+  events: FeaturedEvent[];
 };
 
 const scheduleData = rawScheduleData as ScheduleEvent[];
 
+const SCHEDULE_YEAR = 2026;
 const accentCycle: FeaturedEvent['accent'][] = ['green', 'purple', 'blue'];
 
-function toDisplayDate(date: string) {
+function parseScheduleDate(date: string) {
   const [month, day] = date.split('/');
-  const parsed = new Date(2026, Number(month) - 1, Number(day));
 
-  return parsed.toLocaleDateString('en-US', {
+  return new Date(SCHEDULE_YEAR, Number(month) - 1, Number(day));
+}
+
+function toDisplayDate(date: Date) {
+  return date.toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
@@ -36,7 +48,18 @@ function toDisplayDate(date: string) {
   });
 }
 
-function toWebsiteLabel(website: string) {
+function toShortDate(date: Date) {
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric'
+  });
+}
+
+function toWebsiteLabel(website: string | null) {
+  if (!website) {
+    return 'Website TBD';
+  }
+
   return website
     .replace(/^https?:\/\//, '')
     .replace(/^www\./, '')
@@ -44,7 +67,11 @@ function toWebsiteLabel(website: string) {
     .toUpperCase();
 }
 
-function toWebsiteUrl(website: string) {
+function toWebsiteUrl(website: string | null) {
+  if (!website) {
+    return null;
+  }
+
   return /^https?:\/\//i.test(website) ? website : `https://${website}`;
 }
 
@@ -60,22 +87,70 @@ function splitLocation(location: string) {
   };
 }
 
-export const allEvents = scheduleData;
+function getWeekStart(date: Date) {
+  const weekStart = new Date(date);
+  weekStart.setDate(date.getDate() - date.getDay());
+  weekStart.setHours(0, 0, 0, 0);
 
-export const upcomingEvents: FeaturedEvent[] = scheduleData.slice(0, 8).map((event, index) => {
+  return weekStart;
+}
+
+function addDays(date: Date, days: number) {
+  const nextDate = new Date(date);
+  nextDate.setDate(date.getDate() + days);
+
+  return nextDate;
+}
+
+function toWeekId(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+function toFeaturedEvent(event: ScheduleEvent, index: number): FeaturedEvent {
   const location = splitLocation(event.location);
+  const sortDate = parseScheduleDate(event.date);
 
   return {
     ...event,
     ...location,
     id: `${event.promotion}-${event.day}-${event.date}-${event.location}`,
-    displayDate: toDisplayDate(event.date),
+    displayDate: toDisplayDate(sortDate),
     displayTime: event.time && event.time.trim().length > 0 ? event.time : 'Time TBD',
+    sortDate,
     websiteLabel: toWebsiteLabel(event.website),
     websiteUrl: toWebsiteUrl(event.website),
     accent: accentCycle[index % accentCycle.length]
   };
-});
+}
+
+export const allEvents = scheduleData;
+
+export const featuredEvents: FeaturedEvent[] = scheduleData.map(toFeaturedEvent);
+
+export const scheduleWeeks: ScheduleWeek[] = Array.from(
+  featuredEvents.reduce((weeks, event) => {
+    const weekStart = getWeekStart(event.sortDate);
+    const weekId = toWeekId(weekStart);
+    const weekEnd = addDays(weekStart, 6);
+    const week = weeks.get(weekId) ?? {
+      id: weekId,
+      label: `Week of ${toShortDate(weekStart)}`,
+      rangeLabel: `${toShortDate(weekStart)} - ${toShortDate(weekEnd)}`,
+      events: []
+    };
+
+    week.events.push(event);
+    weeks.set(weekId, week);
+
+    return weeks;
+  }, new Map<string, ScheduleWeek>()).values()
+);
+
+export const upcomingEvents: FeaturedEvent[] = scheduleWeeks[0]?.events ?? [];
 
 export const eventStats = {
   listedEvents: allEvents.length,

@@ -128,12 +128,10 @@ button {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.72) 100%),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.96) 0%, rgba(0, 0, 0, 0.84) 44%, rgba(0, 0, 0, 0.48) 100%),
-    url("/gf-hero-bg.png");
-  background-position: center;
-  background-size: cover;
+  top: -80px;
+  background: url("/gf-hero-bg-square.jpg");
+  background-position: top right;
+  background-repeat: no-repeat;
   opacity: 0.96;
 }
 
@@ -300,6 +298,54 @@ button {
   background: transparent;
   color: var(--green);
   font-weight: 800;
+}
+
+.week-selector {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 16px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.week-selector::-webkit-scrollbar {
+  display: none;
+}
+
+.week-selector__item {
+  display: grid;
+  flex: 0 0 154px;
+  gap: 4px;
+  min-height: 66px;
+  align-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(18, 18, 18, 0.82);
+  color: var(--muted);
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.week-selector__item span {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.week-selector__item strong {
+  color: var(--subtle);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.week-selector__item--active {
+  border-color: rgba(182, 255, 0, 0.72);
+  background: rgba(182, 255, 0, 0.1);
+}
+
+.week-selector__item--active span,
+.week-selector__item--active strong {
+  color: var(--green);
 }
 
 .event-list {
@@ -477,6 +523,11 @@ button {
 .event-meta > span:first-child {
   color: var(--muted);
   text-align: center;
+}
+
+.event-meta__content {
+  display: block;
+  min-width: 0;
 }
 
 .event-meta__subtext {

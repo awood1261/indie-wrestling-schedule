@@ -1,10 +1,15 @@
 import { EventCard } from '../molecules/EventCard';
-import { upcomingEvents } from '../../data/schedule';
+import type { FeaturedEvent } from '../../data/schedule';
 
-export function WeeklyEventList() {
+type WeeklyEventListProps = {
+  events: FeaturedEvent[];
+  weekLabel: string;
+};
+
+export function WeeklyEventList({ events, weekLabel }: WeeklyEventListProps) {
   return (
-    <section className="event-list" aria-label="Upcoming events">
-      {upcomingEvents.map((event, index) => (
+    <section className="event-list" aria-label={`Events for ${weekLabel}`}>
+      {events.map((event, index) => (
         <EventCard
           key={event.id}
           accent={event.accent}
