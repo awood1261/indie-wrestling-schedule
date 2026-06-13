@@ -1,4 +1,3 @@
-import { FilterChip } from '../atoms/FilterChip';
 import { SearchBar } from '../molecules/SearchBar';
 
 type HeroProps = {
@@ -12,16 +11,9 @@ export function Hero({ searchQuery, onSearchChange }: HeroProps) {
       <div className="hero-section__art" />
       <div className="hero-section__content">
         <h1 id="home-title" className="hero-title">
-          Find wrestling events <span>near you</span>
+          wrestling events <span>near you</span>
         </h1>
         <SearchBar value={searchQuery} onChange={onSearchChange} />
-        <div className="filter-row" aria-label="Event filters">
-          <FilterChip icon="⚡" label="All Events" active />
-          <FilterChip icon="▣" label="This Week" />
-          <FilterChip icon="▣" label="This Month" />
-          <FilterChip icon="⌖" label="Near Me" />
-          <FilterChip icon="☷" label="Filters" />
-        </div>
       </div>
     </section>
   );

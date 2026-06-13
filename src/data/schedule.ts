@@ -34,6 +34,7 @@ export type ScheduleWeek = {
 const scheduleData = rawScheduleData as ScheduleEvent[];
 
 const SCHEDULE_YEAR = 2026;
+const DAY_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const accentCycle: FeaturedEvent['accent'][] = ['green', 'purple', 'blue'];
 
 function parseScheduleDate(date: string) {
@@ -183,4 +184,27 @@ export function filterEventsBySearch(events: FeaturedEvent[], query: string) {
 
     return searchableFields.some((field) => field.toLowerCase().includes(normalizedQuery));
   });
+}
+
+export function filterEventsByDayAndState(events: FeaturedEvent[], day: string, state: string) {
+  return events.filter((event) => {
+    const matchesDay = day === 'all' || event.day === day;
+    const matchesState = state === 'all' || event.state === state;
+
+    return matchesDay && matchesState;
+  });
+}
+
+export function getEventFilterOptions(events: FeaturedEvent[]) {
+  const dayOptions = Array.from(new Set(events.map((event) => event.day))).sort(
+    (firstDay, secondDay) => DAY_ORDER.indexOf(firstDay) - DAY_ORDER.indexOf(secondDay)
+  );
+  const stateOptions = Array.from(
+    new Set(events.map((event) => event.state).filter((state) => state.trim().length > 0))
+  ).sort();
+
+  return {
+    dayOptions,
+    stateOptions
+  };
 }
