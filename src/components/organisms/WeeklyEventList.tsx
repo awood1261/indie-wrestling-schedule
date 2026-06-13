@@ -5,9 +5,15 @@ type WeeklyEventListProps = {
   events: FeaturedEvent[];
   weekLabel: string;
   searchQuery?: string;
+  onSelectEvent: (event: FeaturedEvent) => void;
 };
 
-export function WeeklyEventList({ events, weekLabel, searchQuery = '' }: WeeklyEventListProps) {
+export function WeeklyEventList({
+  events,
+  weekLabel,
+  searchQuery = '',
+  onSelectEvent
+}: WeeklyEventListProps) {
   if (events.length === 0) {
     return (
       <section className="empty-state" aria-label={`Events for ${weekLabel}`}>
@@ -36,6 +42,7 @@ export function WeeklyEventList({ events, weekLabel, searchQuery = '' }: WeeklyE
           time={event.displayTime}
           venue={event.venueName}
           cityState={event.cityState}
+          onViewDetails={() => onSelectEvent(event)}
         />
       ))}
     </section>
