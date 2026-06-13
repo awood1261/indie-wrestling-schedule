@@ -9,7 +9,7 @@ describe('App shell', () => {
     render(<App />);
 
     expect(screen.getByRole('img', { name: /grapsfinder/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /find wrestling events near you/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /wrestling events near you/i })).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/search events/i)).toBeInTheDocument();
     const firstEvent = screen.getByRole('article', { name: 'Rocky Mountain Pro' });
 
@@ -31,6 +31,27 @@ describe('App shell', () => {
 
     expect(screen.getByRole('heading', { name: 'Jun 14 - Jun 20' })).toBeInTheDocument();
     expect(screen.getByRole('article', { name: 'Pro Championship Wrestling (PCW)' })).toBeInTheDocument();
+  });
+
+  it('opens an event detail view with complete location and website information', () => {
+    render(<App />);
+
+    const firstEvent = screen.getByRole('article', { name: 'Rocky Mountain Pro' });
+    fireEvent.click(within(firstEvent).getByRole('button', { name: /view details for rocky mountain pro/i }));
+
+    expect(screen.getByRole('heading', { name: 'Rocky Mountain Pro' })).toBeInTheDocument();
+    expect(screen.getAllByText('15200 W 6th Ave, Golden, CO')).toHaveLength(2);
+    expect(screen.getByRole('link', { name: /open website/i })).toHaveAttribute(
+      'href',
+      'https://facebook.com/TheRockyMtnPro'
+    );
+    expect(screen.getByRole('link', { name: /view on map/i })).toHaveAttribute(
+      'href',
+      expect.stringContaining('15200%20W%206th%20Ave')
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /back to events/i }));
+    expect(screen.getByPlaceholderText(/search events/i)).toBeInTheDocument();
   });
 
   it('filters selected week events by promotion, city, state, and venue', () => {
@@ -129,6 +150,7 @@ describe('App shell', () => {
         time="Time TBD"
         venue="Test Venue"
         cityState="Test City, PA"
+        onViewDetails={() => undefined}
       />
     );
 

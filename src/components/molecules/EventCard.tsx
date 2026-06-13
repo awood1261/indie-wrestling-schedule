@@ -13,6 +13,7 @@ type EventCardProps = {
   time: string;
   venue: string;
   cityState: string;
+  onViewDetails: () => void;
 };
 
 export function EventCard({
@@ -25,7 +26,8 @@ export function EventCard({
   date,
   time,
   venue,
-  cityState
+  cityState,
+  onViewDetails
 }: EventCardProps) {
   const isWeekend = ['Friday', 'Saturday', 'Sunday'].includes(day);
   const shouldShowTimeTbd = time === 'Time TBD';
@@ -67,7 +69,12 @@ export function EventCard({
         </div>
 
         <div className="event-card__action-row">
-          <button type="button" className="detail-button">
+          <button
+            type="button"
+            className="detail-button"
+            aria-label={`View details for ${promotion}`}
+            onClick={onViewDetails}
+          >
             View Details
             <span aria-hidden="true">›</span>
           </button>
