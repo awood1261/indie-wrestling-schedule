@@ -204,36 +204,61 @@ button {
   color: var(--subtle);
 }
 
-.filter-row {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding-bottom: 2px;
-  scrollbar-width: none;
+.filter-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
 }
 
-.filter-row::-webkit-scrollbar {
-  display: none;
-}
-
-.filter-chip {
-  display: inline-flex;
-  flex: 0 0 auto;
-  min-height: 48px;
-  align-items: center;
+.filter-select {
+  display: grid;
   gap: 8px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(18, 18, 18, 0.82);
-  color: var(--text);
-  padding: 0 18px;
-  font-weight: 700;
+  min-width: 0;
 }
 
-.filter-chip--active {
+.filter-select__label {
+  color: var(--subtle);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.filter-select__control {
+  position: relative;
+  display: block;
+}
+
+.filter-select__control::after {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--green);
+  border-bottom: 2px solid var(--green);
+  content: "";
+  pointer-events: none;
+  transform: translateY(-70%) rotate(45deg);
+}
+
+.filter-select select {
+  width: 100%;
+  min-height: 50px;
+  appearance: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(18, 18, 18, 0.92);
+  color: var(--text);
+  font-weight: 800;
+  outline: 0;
+  padding: 0 40px 0 14px;
+}
+
+.filter-select select:focus-visible {
   border-color: rgba(182, 255, 0, 0.75);
-  background: rgba(182, 255, 0, 0.1);
-  color: var(--green);
+  box-shadow: 0 0 0 3px rgba(182, 255, 0, 0.14);
 }
 
 .section-heading {

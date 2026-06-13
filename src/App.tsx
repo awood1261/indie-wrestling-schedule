@@ -1,22 +1,44 @@
 import { useMemo, useState } from 'react';
 import { BottomNav } from './components/organisms/BottomNav';
+import { EventFilters } from './components/organisms/EventFilters';
 import { Header } from './components/organisms/Header';
 import { Hero } from './components/organisms/Hero';
 import { WeekSelector } from './components/organisms/WeekSelector';
 import { WeeklyEventList } from './components/organisms/WeeklyEventList';
-import { filterEventsBySearch, scheduleWeeks } from './data/schedule';
+import {
+  filterEventsByDayAndState,
+  filterEventsBySearch,
+  getEventFilterOptions,
+  scheduleWeeks
+} from './data/schedule';
 
 export default function App() {
   const [selectedWeekId, setSelectedWeekId] = useState(scheduleWeeks[0]?.id ?? '');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDay, setSelectedDay] = useState('all');
+  const [selectedState, setSelectedState] = useState('all');
   const selectedWeek = useMemo(
     () => scheduleWeeks.find((week) => week.id === selectedWeekId) ?? scheduleWeeks[0],
     [selectedWeekId]
   );
-  const filteredEvents = useMemo(
-    () => filterEventsBySearch(selectedWeek?.events ?? [], searchQuery),
-    [searchQuery, selectedWeek]
+  const filterOptions = useMemo(
+    () => getEventFilterOptions(selectedWeek?.events ?? []),
+    [selectedWeek]
   );
+  const filteredEvents = useMemo(
+    () =>
+      filterEventsByDayAndState(
+        filterEventsBySearch(selectedWeek?.events ?? [], searchQuery),
+        selectedDay,
+        selectedState
+      ),
+    [searchQuery, selectedDay, selectedState, selectedWeek]
+  );
+  const handleSelectWeek = (weekId: string) => {
+    setSelectedWeekId(weekId);
+    setSelectedDay('all');
+    setSelectedState('all');
+  };
 
   return (
     <div className="app-shell">
@@ -37,7 +59,16 @@ export default function App() {
         <WeekSelector
           weeks={scheduleWeeks}
           selectedWeekId={selectedWeek?.id ?? ''}
-          onSelectWeek={setSelectedWeekId}
+          onSelectWeek={handleSelectWeek}
+        />
+
+        <EventFilters
+          dayOptions={filterOptions.dayOptions}
+          stateOptions={filterOptions.stateOptions}
+          selectedDay={selectedDay}
+          selectedState={selectedState}
+          onSelectDay={setSelectedDay}
+          onSelectState={setSelectedState}
         />
 
         <WeeklyEventList

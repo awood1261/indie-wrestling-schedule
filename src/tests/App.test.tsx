@@ -53,6 +53,33 @@ describe('App shell', () => {
     expect(screen.getByRole('article', { name: 'Wrestling Open' })).toBeInTheDocument();
   });
 
+  it('filters selected week events by day of week and state', () => {
+    render(<App />);
+
+    fireEvent.change(screen.getByLabelText('Day'), { target: { value: 'Friday' } });
+    expect(screen.getByRole('article', { name: 'ProSouth Wrestling' })).toBeInTheDocument();
+    expect(screen.queryByRole('article', { name: 'Rocky Mountain Pro' })).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('State'), { target: { value: 'AL' } });
+    expect(screen.getByRole('article', { name: 'ProSouth Wrestling' })).toBeInTheDocument();
+    expect(screen.queryByRole('article', { name: 'Phoenix Wrestling Experience' })).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('Day'), { target: { value: 'all' } });
+    expect(screen.getByRole('article', { name: 'ProSouth Wrestling' })).toBeInTheDocument();
+  });
+
+  it('resets day and state filters when selecting a different week', () => {
+    render(<App />);
+
+    fireEvent.change(screen.getByLabelText('Day'), { target: { value: 'Friday' } });
+    fireEvent.change(screen.getByLabelText('State'), { target: { value: 'AL' } });
+    fireEvent.click(screen.getByRole('button', { name: /Week of Jun 14/i }));
+
+    expect(screen.getByLabelText('Day')).toHaveValue('all');
+    expect(screen.getByLabelText('State')).toHaveValue('all');
+    expect(screen.getByRole('article', { name: 'Pro Championship Wrestling (PCW)' })).toBeInTheDocument();
+  });
+
   it('shows an empty state when search has no selected week matches', () => {
     render(<App />);
 
