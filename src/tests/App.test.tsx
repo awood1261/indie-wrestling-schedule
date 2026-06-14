@@ -54,6 +54,35 @@ describe('App shell', () => {
     expect(screen.getByPlaceholderText(/search events/i)).toBeInTheDocument();
   });
 
+  it('shows a month calendar with events for the selected date', () => {
+    render(<App />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Calendar' }));
+
+    expect(screen.getByRole('heading', { name: 'Calendar' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'June 2026' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Thursday, June 11, 2026' })).toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'Rocky Mountain Pro' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Select Jun 12, 2026/i }));
+
+    expect(screen.getByRole('heading', { name: 'Friday, June 12, 2026' })).toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'ProSouth Wrestling' })).toBeInTheDocument();
+  });
+
+  it('opens event details from the calendar agenda', () => {
+    render(<App />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Calendar' }));
+    fireEvent.click(screen.getByRole('button', { name: /Select Jun 12, 2026/i }));
+    const calendarEvent = screen.getByRole('article', { name: 'ProSouth Wrestling' });
+
+    fireEvent.click(within(calendarEvent).getByRole('button', { name: /view details for prosouth wrestling/i }));
+
+    expect(screen.getByRole('heading', { name: 'ProSouth Wrestling' })).toBeInTheDocument();
+    expect(screen.getAllByText('1003 Industrial Park, Piedmont, AL')).toHaveLength(2);
+  });
+
   it('filters selected week events by promotion, city, state, and venue', () => {
     render(<App />);
 
