@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { BottomNav } from './components/organisms/BottomNav';
+import { CalendarView } from './components/organisms/CalendarView';
 import { EventDetailView } from './components/organisms/EventDetailView';
 import { EventFilters } from './components/organisms/EventFilters';
 import { Header } from './components/organisms/Header';
@@ -14,12 +15,15 @@ import {
   type FeaturedEvent
 } from './data/schedule';
 
+type AppView = 'discover' | 'calendar';
+
 export default function App() {
   const [selectedWeekId, setSelectedWeekId] = useState(scheduleWeeks[0]?.id ?? '');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDay, setSelectedDay] = useState('all');
   const [selectedState, setSelectedState] = useState('all');
   const [selectedEvent, setSelectedEvent] = useState<FeaturedEvent | null>(null);
+  const [activeView, setActiveView] = useState<AppView>('discover');
   const selectedWeek = useMemo(
     () => scheduleWeeks.find((week) => week.id === selectedWeekId) ?? scheduleWeeks[0],
     [selectedWeekId]
@@ -43,6 +47,10 @@ export default function App() {
     setSelectedState('all');
     setSelectedEvent(null);
   };
+  const handleSelectView = (view: AppView) => {
+    setActiveView(view);
+    setSelectedEvent(null);
+  };
 
   return (
     <div className="app-shell">
@@ -50,6 +58,11 @@ export default function App() {
       <main>
         {selectedEvent ? (
           <EventDetailView event={selectedEvent} onBack={() => setSelectedEvent(null)} />
+        ) : activeView === 'calendar' ? (
+          <CalendarView
+            events={scheduleWeeks.flatMap((week) => week.events)}
+            onSelectEvent={setSelectedEvent}
+          />
         ) : (
           <>
             <Hero searchQuery={searchQuery} onSearchChange={setSearchQuery} />
@@ -59,7 +72,7 @@ export default function App() {
                 <p className="eyebrow">Selected week</p>
                 <h2>{selectedWeek?.rangeLabel ?? 'No events available'}</h2>
               </div>
-              <button type="button" className="calendar-link">
+              <button type="button" className="calendar-link" onClick={() => handleSelectView('calendar')}>
                 View Calendar <span aria-hidden="true">-&gt;</span>
               </button>
             </section>
@@ -88,7 +101,7 @@ export default function App() {
           </>
         )}
       </main>
-      <BottomNav />
+      <BottomNav activeView={activeView} onSelectView={handleSelectView} />
     </div>
   );
 }
